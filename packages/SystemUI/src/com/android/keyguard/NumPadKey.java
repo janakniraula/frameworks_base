@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -37,11 +38,13 @@ import androidx.annotation.Nullable;
 
 import com.android.settingslib.Utils;
 import com.android.systemui.res.R;
+import com.android.systemui.Dependency;
+import com.android.systemui.tuner.TunerService;
 
 /**
  * Viewgroup for the bouncer numpad button, specifically for digits.
  */
-public class NumPadKey extends ViewGroup implements NumPadAnimationListener {
+public class NumPadKey extends ViewGroup implements NumPadAnimationListener, TunerService.Tunable {
     // list of "ABC", etc per digit, starting with '0'
     static String sKlondike[];
 
@@ -53,6 +56,10 @@ public class NumPadKey extends ViewGroup implements NumPadAnimationListener {
     private int mTextViewResId;
     private PasswordTextView mTextView;
     private boolean mAnimationsEnabled = true;
+    
+    private final String LOCKSCREEN_SCRAMBLE_PIN_LAYOUT = 
+            "system:" + Settings.System.LOCKSCREEN_SCRAMBLE_PIN_LAYOUT;
+    private boolean mScramblePin;
 
     @Nullable
     private NumPadAnimator mAnimator;
@@ -117,21 +124,7 @@ public class NumPadKey extends ViewGroup implements NumPadAnimationListener {
         mDigitText.setText(Integer.toString(mDigit));
         mKlondikeText = (TextView) findViewById(R.id.klondike_text);
 
-        if (mDigit >= 0) {
-            if (sKlondike == null) {
-                sKlondike = getResources().getStringArray(R.array.lockscreen_num_pad_klondike);
-            }
-            if (sKlondike != null && sKlondike.length > mDigit) {
-                String klondike = sKlondike[mDigit];
-                final int len = klondike.length();
-                if (len > 0) {
-                    mKlondikeText.setText(klondike);
-                } else if (mKlondikeText.getVisibility() != View.GONE) {
-                    mKlondikeText.setVisibility(View.INVISIBLE);
-                }
-            }
-        }
-
+        updateText();
         setContentDescription(mDigitText.getText().toString());
 
         Drawable background = getBackground();
@@ -140,6 +133,41 @@ public class NumPadKey extends ViewGroup implements NumPadAnimationListener {
                     R.style.NumPadKey, mDigitText, null);
         } else {
             mAnimator = null;
+        }
+        Dependency.get(TunerService.class).addTunable(this, LOCKSCREEN_SCRAMBLE_PIN_LAYOUT);
+    }
+
+    @Override
+    public void onTuningChanged(String key, String newValue) {
+        switch (key) {
+            case LOCKSCREEN_SCRAMBLE_PIN_LAYOUT:
+                mScramblePin = TunerService.parseIntegerSwitch(newValue, false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void setDigit(int digit) {
+        mDigit = digit;
+        updateText();
+    }
+
+    private void updateText() {
+        if (mDigit >= 0) {
+            mDigitText.setText(Integer.toString(mDigit));
+            if (sKlondike == null) {
+                sKlondike = getResources().getStringArray(R.array.lockscreen_num_pad_klondike);
+            }
+            if (sKlondike != null && sKlondike.length > mDigit) {
+                String klondike = sKlondike[mDigit];
+                final int len = klondike.length();
+                if (len > 0  || mScramblePin) {
+                    mKlondikeText.setText(klondike);
+                } else if (mKlondikeText.getVisibility() != View.GONE) {
+                    mKlondikeText.setVisibility(View.INVISIBLE);
+                }
+            }
         }
     }
 
