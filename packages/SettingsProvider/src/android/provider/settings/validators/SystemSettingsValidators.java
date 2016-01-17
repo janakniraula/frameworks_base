@@ -274,5 +274,7 @@ public class SystemSettingsValidators {
         VALIDATORS.put(System.STATUS_BAR_QUICK_QS_PULLDOWN, new InclusiveIntegerRangeValidator(0, 2));
         VALIDATORS.put(System.VOLUME_WAKE_SCREEN, BOOLEAN_VALIDATOR);
         VALIDATORS.put(System.VOLBTN_MUSIC_CONTROLS, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.TORCH_LONG_PRESS_POWER_GESTURE, BOOLEAN_VALIDATOR);
+        VALIDATORS.put(System.TORCH_LONG_PRESS_POWER_TIMEOUT, new InclusiveIntegerRangeValidator(0, 3600));
     }
 }
