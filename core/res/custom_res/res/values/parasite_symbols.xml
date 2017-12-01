@@ -11,4 +11,9 @@
 
     <!-- Whether to cancel fingerprint operation if not idle -->
     <java-symbol type="bool" name="config_fpCancelIfNotIdle" />
+
+    <!-- Proximity check on wake -->
+    <java-symbol type="bool" name="config_proximityCheckOnWake" />
+    <java-symbol type="integer" name="config_proximityCheckTimeout" />
+    <java-symbol type="bool" name="config_proximityCheckOnWakeEnabledByDefault" />
 </resources>
