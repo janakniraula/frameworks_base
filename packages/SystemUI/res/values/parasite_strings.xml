@@ -25,4 +25,7 @@
 
     <!-- Google lens screenshot notification -->
     <string name="lens">Lens</string>
+
+    <!-- SoundSearch Tile -->
+    <string name="quick_settings_sound_search">Sound search</string>
 </resources>
