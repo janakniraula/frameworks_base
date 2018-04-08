@@ -44,4 +44,8 @@
     <string name="dlg_ok" translatable="false">@android:string/ok</string>
     <string name="dlg_cancel" translatable="false">@android:string/cancel</string>
     <string name="guts_force_close_app">Close App</string>
+
+    <!-- Smart Pixels QS Tile -->
+    <string name="quick_settings_smart_pixels">Smart Pixels</string>
+    <string name="quick_settings_smart_pixels_on_power_save">Auto-enabled Smart Pixels</string>
 </resources>
