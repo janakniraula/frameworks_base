@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- The list of vendor package signatures that should also be considered
+         platform signatures, specifically for use on devices with a vendor partition. -->
+    <string-array name="config_vendorPlatformSignatures">
+    </string-array>
 </resources>
