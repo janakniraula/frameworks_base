@@ -48,4 +48,7 @@
     <!-- Smart Pixels QS Tile -->
     <string name="quick_settings_smart_pixels">Smart Pixels</string>
     <string name="quick_settings_smart_pixels_on_power_save">Auto-enabled Smart Pixels</string>
+
+    <!-- Name of the nfc status bar icon. -->
+    <string name="status_bar_nfc">NFC</string>
 </resources>
