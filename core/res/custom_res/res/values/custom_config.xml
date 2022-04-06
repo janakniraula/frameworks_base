@@ -197,4 +197,7 @@
     <string-array name="config_postNotificationIgnoredApps" translatable="false">
     </string-array>
 
+    <!-- Whether to allow network traffic on statusbar -->
+    <bool name="config_supportsNetworkTrafficOnStatusBar">true</bool>
+
 </resources>
