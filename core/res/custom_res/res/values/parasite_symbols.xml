@@ -26,4 +26,7 @@
     <!-- Title & summary of notification letting users know that battery saver is now on -->
     <java-symbol type="string" name="battery_saver_on_notification_title" />
     <java-symbol type="string" name="battery_saver_on_notification_summary" />
+
+    <!-- Display color inversion availability -->
+    <java-symbol type="bool" name="config_displayInversionAvailable" />
 </resources>
