@@ -165,6 +165,7 @@ import com.android.server.am.PlatformCompatCache.CachedCompatChangeId;
 import com.android.server.wm.ActivityServiceConnectionsHolder;
 import com.android.server.wm.WindowProcessController;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -456,6 +457,20 @@ public class OomAdjuster {
         mTmpQueue = new ArrayDeque<ProcessRecord>(mConstants.CUR_MAX_CACHED_PROCESSES << 1);
         mNumSlots = ((CACHED_APP_MAX_ADJ - CACHED_APP_MIN_ADJ + 1) >> 1)
                 / CACHED_APP_IMPORTANCE_LEVELS;
+
+        // Enable Proactive Kills on devices with modern kernel mm setup
+        conditionallyEnableProactiveKills();
+    }
+
+    void conditionallyEnableProactiveKills() {
+        File mglru = new File("/sys/kernel/mm/lru_gen/enabled");
+        File psi = new File("/proc/pressure/memory");
+        File lmk_kernel = new File("/sys/module/lowmemorykiller/parameters/minfree");
+
+        if (!lmk_kernel.exists() && mglru.exists() && psi.exists()) {
+            Slog.i(TAG, "Detected kernel with modern mm setup, enabling Proactive Kills.");
+            mProactiveKillsEnabled = true;
+        }
     }
 
     void initSettings() {
@@ -1283,6 +1298,8 @@ public class OomAdjuster {
         return CachedAppOptimizer.getFreeSwapPercent();
     }
 
+    private boolean mProactiveKillsEnabled = mConstants.PROACTIVE_KILLS_ENABLED;
+
     @GuardedBy({"mService", "mProcLock"})
     private boolean updateAndTrimProcessLSP(final long now, final long nowElapsed,
             final long oldTime, final ActiveUids activeUids, @OomAdjReason int oomAdjReason) {
@@ -1307,9 +1324,8 @@ public class OomAdjuster {
         int numEmpty = 0;
         int numTrimming = 0;
 
-        boolean proactiveKillsEnabled = mConstants.PROACTIVE_KILLS_ENABLED;
         double lowSwapThresholdPercent = mConstants.LOW_SWAP_THRESHOLD_PERCENT;
-        double freeSwapPercent =  proactiveKillsEnabled ? getFreeSwapPercent() : 1.00;
+        double freeSwapPercent = mProactiveKillsEnabled ? getFreeSwapPercent() : 1.00;
         ProcessRecord lruCachedApp = null;
 
         for (int i = numLru - 1; i >= 0; i--) {
@@ -1356,7 +1372,7 @@ public class OomAdjuster {
                                     ApplicationExitInfo.REASON_OTHER,
                                     ApplicationExitInfo.SUBREASON_TOO_MANY_CACHED,
                                     true);
-                        } else if (proactiveKillsEnabled) {
+                        } else if (mProactiveKillsEnabled) {
                             lruCachedApp = app;
                         }
                         break;
@@ -1377,7 +1393,7 @@ public class OomAdjuster {
                                         ApplicationExitInfo.REASON_OTHER,
                                         ApplicationExitInfo.SUBREASON_TOO_MANY_EMPTY,
                                         true);
-                            } else if (proactiveKillsEnabled) {
+                            } else if (mProactiveKillsEnabled) {
                                 lruCachedApp = app;
                             }
                         }
@@ -1417,7 +1433,7 @@ public class OomAdjuster {
             }
         }
 
-        if (proactiveKillsEnabled                               // Proactive kills enabled?
+        if (mProactiveKillsEnabled                              // Proactive kills enabled?
                 && doKillExcessiveProcesses                     // Should kill excessive processes?
                 && freeSwapPercent < lowSwapThresholdPercent    // Swap below threshold?
                 && lruCachedApp != null                         // If no cached app, let LMKD decide
