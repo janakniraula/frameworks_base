@@ -3086,21 +3086,29 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
 
     @Override
     public void onTuningChanged(String key, String newValue) {
-        if (NAVIGATION_BAR_SHOW.equals(key) && mDisplayId == Display.DEFAULT_DISPLAY &&
-                mWindowManagerService != null) {
-            boolean navbarEnabled = NavbarUtils.isEnabled(mContext);
-            boolean hasNavbar = getNavigationBarView() != null;
-            if (navbarEnabled) {
-                if (!hasNavbar) {
-                    mNavigationBarController.onDisplayReady(mDisplayId);
+        switch (key) {
+            case NAVIGATION_BAR_SHOW:
+                if (mDisplayId != Display.DEFAULT_DISPLAY
+                    || mWindowManagerService == null) {
+                    break;
                 }
-            } else {
-                if (hasNavbar) {
-                    mNavigationBarController.onDisplayRemoved(mDisplayId);
+                boolean navbarEnabled = NavbarUtils.isEnabled(mContext);
+                boolean hasNavbar = getNavigationBarView() != null;
+                if (navbarEnabled) {
+                    if (!hasNavbar) {
+                        mNavigationBarController.onDisplayReady(mDisplayId);
+                    }
+                } else {
+                    if (hasNavbar) {
+                        mNavigationBarController.onDisplayRemoved(mDisplayId);
+                    }
                 }
-            }
-        } else if (DISPLAY_CUTOUT_HIDDEN.equals(key)) {
-            updateCutoutOverlay(TunerService.parseIntegerSwitch(newValue, false));
+                break;
+            case DISPLAY_CUTOUT_HIDDEN:
+                updateCutoutOverlay(TunerService.parseIntegerSwitch(newValue, false));
+                break;
+            default:
+                break;
         }
     }
 
