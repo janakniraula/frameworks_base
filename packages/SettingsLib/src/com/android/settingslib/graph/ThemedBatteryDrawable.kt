@@ -77,10 +77,10 @@ open class ThemedBatteryDrawable(private val context: Context, frameColor: Int) 
     // Colors can be configured based on battery level (see res/values/arrays.xml)
     private var colorLevels: IntArray
 
-    private var fillColor: Int = Color.WHITE
-    private var backgroundColor: Int = Color.WHITE
+    private var fillColor: Int = Color.MAGENTA
+    private var backgroundColor: Int = Color.MAGENTA
     // updated whenever level changes
-    private var levelColor: Int = Color.WHITE
+    private var levelColor: Int = Color.MAGENTA
 
     // Dual tone implies that battery level is a clipped overlay over top of the whole shape
     private var dualTone = false
