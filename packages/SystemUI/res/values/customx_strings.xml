@@ -9,7 +9,11 @@
     <string name="global_action_users">Users</string>
 
     <!-- Custom QS tiles -->
-    <string name="tap_to_add_tiles">Tap on tiles to add or remove</string>
+	<!-- Label for the area where tiles can be added to the Quick Settings panel -->
+    <string name="drag_or_tap_to_add_tiles">Hold &amp; drag or tap to add tiles</string>
+    <!-- Label for the area where tiles can be dragged in to remove -->
+    <string name="drag_or_tap_to_remove_tiles">Hold &amp; drag or tap to remove tiles</string>
+
     <!-- Ambient display QS tile -->
     <string name="quick_settings_ambient_display_label">Ambient display</string>
     <string name="accessibility_quick_settings_ambient_display_off">Ambient display off.</string>
