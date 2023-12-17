@@ -2040,4 +2040,8 @@ public class NotificationStackScrollLayoutController implements Dumpable {
             }
         }
     }
+
+    public View getNotificationStackScrollLayoutView() {
+        return mView;
+    }
 }
