@@ -37,6 +37,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Binder;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.SpannableStringBuilder;
 import android.text.style.BulletSpan;
 import android.util.DisplayMetrics;
@@ -373,7 +374,10 @@ public class ScreenPinningRequest implements View.OnClickListener,
          * @return whether there is a soft nav bar on specific display.
          */
         private boolean hasSoftNavigationBar(Context context, int displayId) {
-            if (displayId == DEFAULT_DISPLAY && NavbarUtils.isEnabled(context)) {
+            if (displayId == DEFAULT_DISPLAY &&
+                    Settings.System.getIntForUser(context.getContentResolver(),
+                            Settings.System.NAVIGATION_BAR_SHOW, 0,
+                            UserHandle.USER_CURRENT) == 1) {
                 return true;
             }
             try {
