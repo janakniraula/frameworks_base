@@ -1,0 +1,84 @@
+//
+// Copyright (C) 2018-2023 The LineageOS Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+android_app {
+    name: "org.lineageos.platform-res",
+    sdk_version: "core_platform",
+    certificate: "platform",
+
+    manifest: "AndroidManifest.xml",
+
+    srcs: [
+        ":framework-res{.export-package.apk}",
+    ],
+
+    // Disable dexpreopt and verify_uses_libraries check as the app
+    // contains no Java code to be dexpreopted.
+    enforce_uses_libs: false,
+    dex_preopt: {
+        enabled: false,
+    },
+
+    // Soong special-cases org.lineageos.platform-res to install this alongside
+    // the libraries at /system_ext/framework/org.lineageos.platform-res.apk.
+
+    aaptflags: [
+        "--private-symbols",
+        "org.lineageos.platform.internal",
+
+        // Framework doesn't need versioning since it IS the platform.
+        "--no-auto-version",
+
+        // Allow overlay to add resource
+        "--auto-add-overlay",
+
+        // Tell aapt to create "extending (non-application)" resource IDs,
+        // since these resources will be used by many apps.
+        "--allow-reserved-package-id",
+        // Use id 0x3f (one less than app id).
+        "--package-id",
+        "63",
+    ],
+
+    resource_dirs: [
+        "res",
+    ],
+
+    // Create package-export.apk, which other packages can use to get
+    // PRODUCT-agnostic resource data like IDs and type definitions.
+    export_package_resources: true,
+}
+
+java_genrule {
+    name: "org.lineageos.platform-res-package-jar",
+    srcs: [":org.lineageos.platform-res{.export-package.apk}"],
+    out: ["org.lineageos.platform-res-package.jar"],
+    cmd: "cp $(in) $(out)",
+}
+
+// Resources only target for use by core
+// ============================================================
+
+java_library {
+    name: "org.lineageos.platform.resources",
+
+    srcs: [
+        // For the generated R.java and Manifest.java
+        ":org.lineageos.platform-res{.aapt.srcjar}",
+    ],
+
+    sdk_version: "core_current",
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for the TheParasiteProject system components when they are shown to the user. -->
+    <string name="parasite_system_label">Parasite System</string>
+</resources>
