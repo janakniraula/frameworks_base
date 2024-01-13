@@ -302,6 +302,9 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private static final String ISLAND_NOTIFICATION =
             "system:" + Settings.System.ISLAND_NOTIFICATION;
 
+    private static final String HEADS_UP_NOTIFICATIONS_ENABLED =
+            "global:" + Settings.Global.HEADS_UP_NOTIFICATIONS_ENABLED;
+
     private static final Rect M_DUMMY_DIRTY_RECT = new Rect(0, 0, 1, 1);
     private static final Rect EMPTY_RECT = new Rect();
     /**
@@ -718,6 +721,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     private IslandView mNotifIsland;
     private NotificationStackScrollLayout mNotificationStackScroller;
     private boolean mUseIslandNotification;
+    private boolean mUseHeadsUp;
 
     @Inject
     public NotificationPanelViewController(NotificationPanelView view,
@@ -4671,6 +4675,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             mTunerService.addTunable(this, STATUS_BAR_QUICK_QS_PULLDOWN);
             mTunerService.addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
             mTunerService.addTunable(this, ISLAND_NOTIFICATION);
+            mTunerService.addTunable(this, HEADS_UP_NOTIFICATIONS_ENABLED);
             // Theme might have changed between inflating this view and attaching it to the
             // window, so
             // force a call to onThemeChanged
@@ -4697,9 +4702,10 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                 mOneFingerQuickSettingsIntercept = TunerService.parseInteger(newValue, 1);
             } else if (DOUBLE_TAP_SLEEP_GESTURE.equals(key)) {
                 mDoubleTapToSleepEnabled = TunerService.parseIntegerSwitch(newValue, true);
-            } else if (ISLAND_NOTIFICATION.equals(key)) {
+            } else if (ISLAND_NOTIFICATION.equals(key) || HEADS_UP_NOTIFICATIONS_ENABLED.equals(key)) {
+                mUseHeadsUp = TunerService.parseIntegerSwitch(newValue, true);
                 mUseIslandNotification = TunerService.parseIntegerSwitch(newValue, true);
-                mNotifIsland.setIslandEnabled(mUseIslandNotification);
+                mNotifIsland.setIslandEnabled(mUseIslandNotification && mUseHeadsUp);
             }
         }
     }
@@ -5372,12 +5378,15 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
 
     @Override
     public void showIsland(boolean show) {
-        if (!mUseIslandNotification) return;
-        mNotifIsland.showIsland(show, getExpandedFraction());
+        if (mUseIslandNotification && mUseHeadsUp) {
+            mNotifIsland.showIsland(show, getExpandedFraction());
+        }
     }
 
     protected void updateIslandVisibility() {
-        mNotifIsland.updateIslandVisibility(getExpandedFraction());
+        if (mUseIslandNotification && mUseHeadsUp) {
+            mNotifIsland.updateIslandVisibility(getExpandedFraction());
+        }
     }
 
     protected int getOneFingerQuickSettingsIntercept() {
