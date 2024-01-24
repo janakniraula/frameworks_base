@@ -16,9 +16,6 @@
 
 package com.android.systemui.qs.tiles;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.BatteryManager;
 import android.os.Handler;
@@ -58,10 +55,6 @@ public class PowerShareTile extends QSTileImpl<QSTile.BooleanState>
 
     private IPowerShare mPowerShare;
     private BatteryController mBatteryController;
-    private NotificationManager mNotificationManager;
-    private Notification mNotification;
-    private static final String CHANNEL_ID = TILE_SPEC;
-    private static final int NOTIFICATION_ID = 273298;
 
     @Inject
     public PowerShareTile(
@@ -83,22 +76,6 @@ public class PowerShareTile extends QSTileImpl<QSTile.BooleanState>
         }
 
         mBatteryController = batteryController;
-        mNotificationManager = mContext.getSystemService(NotificationManager.class);
-
-        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
-                mContext.getString(R.string.quick_settings_powershare_label),
-                NotificationManager.IMPORTANCE_DEFAULT);
-        mNotificationManager.createNotificationChannel(notificationChannel);
-
-        Notification.Builder builder = new Notification.Builder(mContext, CHANNEL_ID);
-        builder.setContentTitle(
-                mContext.getString(R.string.quick_settings_powershare_enabled_label));
-        builder.setSmallIcon(R.drawable.ic_qs_powershare);
-        builder.setOnlyAlertOnce(true);
-        mNotification = builder.build();
-        mNotification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT;
-        mNotification.visibility = Notification.VISIBILITY_PUBLIC;
-
         batteryController.addCallback(this);
     }
 
@@ -125,16 +102,6 @@ public class PowerShareTile extends QSTileImpl<QSTile.BooleanState>
             } catch (RemoteException ex) {
                 ex.printStackTrace();
             }
-        }
-
-        try {
-            if (mPowerShare.isEnabled()) {
-                mNotificationManager.notify(NOTIFICATION_ID, mNotification);
-            } else {
-                mNotificationManager.cancel(NOTIFICATION_ID);
-            }
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
         }
     }
 
