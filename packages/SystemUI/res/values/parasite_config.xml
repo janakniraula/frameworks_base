@@ -6,4 +6,7 @@
 
     <!-- StatusBar burn-in protection -->
     <bool name="config_disableStatusBarBurnInProtection">false</bool>
+
+    <!-- Whether the mobile signal icon pipeline should ignore IWlan status -->
+    <bool name="config_mobileIconIgnoresIWlan">false</bool>
 </resources>
