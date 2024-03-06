@@ -154,10 +154,6 @@ public class PowerShareTile extends QSTileImpl<QSTile.BooleanState>
             return;
         }
 
-        if (state.slash == null) {
-            state.slash = new SlashState();
-        }
-
         state.icon = ResourceIcon.get(R.drawable.ic_qs_powershare);
         try {
             state.value = mPowerShare.isEnabled();
@@ -165,7 +161,6 @@ public class PowerShareTile extends QSTileImpl<QSTile.BooleanState>
             state.value = false;
             ex.printStackTrace();
         }
-        state.slash.isSlashed = state.value;
         state.label = mContext.getString(R.string.quick_settings_powershare_label);
 
         if (mBatteryController.isPowerSave() || getBatteryLevel() < getMinBatteryLevel()) {
