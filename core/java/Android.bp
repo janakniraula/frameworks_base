@@ -28,6 +28,7 @@ filegroup {
     srcs: [
         "**/*.java",
         "**/*.aidl",
+        ":custom-utils-srcs"
     ],
     visibility: ["//frameworks/base"],
 }
