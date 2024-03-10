@@ -911,7 +911,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     final long downTime = (Long) msg.obj;
                     mDeferredKeyActionExecutor.setActionsExecutable(keyCode, downTime);
                 case MSG_CAMERA_LONG_PRESS:
-                    KeyEvent event = (KeyEvent) msg.obj;
                     mIsLongPress = true;
                     break;
                 case MSG_TOGGLE_TORCH:
