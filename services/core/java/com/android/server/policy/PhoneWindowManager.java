@@ -2234,7 +2234,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         try {
             // TODO: This only stops the factory-installed search manager.
             // Need to formalize an API to handle others
-            SearchManager searchManager = getSearchManager();
+            SearchManager searchManager = (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
             if (searchManager != null) {
                 searchManager.stopSearch();
             }
@@ -2356,7 +2356,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             } else if (longPress) {
                 if (!keyguardOn && fromNavbar) {
                     // Post to main thread to avoid blocking input pipeline.
-                    mHandler.post(() -> handleLongPressOnHome(event));
+                    mHandler.post(() -> handleLongPressOnHome(event.getDeviceId(), event.getEventTime()));
                 } else if (!keyguardOn && !mHomeConsumed &&
                         !fromNavbar &&
                         mHomeLongPressAction != Action.NOTHING) {
