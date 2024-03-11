@@ -3117,11 +3117,17 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces, Tune
                 boolean hasNavbar = getNavigationBarView() != null;
                 if (navbarEnabled) {
                     if (!hasNavbar) {
-                        mNavigationBarController.onDisplayReady(mDisplayId);
+                        RegisterStatusBarResult result = null;
+                        try {
+                            result = mBarService.registerStatusBar(mCommandQueue);
+                        } catch (RemoteException ex) {
+                            ex.rethrowFromSystemServer();
+                        }
+                        mNavigationBarController.createNavigationBars(true, result);
                     }
                 } else {
                     if (hasNavbar) {
-                        mNavigationBarController.onDisplayRemoved(mDisplayId);
+                        mNavigationBarController.removeNavigationBar(mDisplayId);
                     }
                 }
                 break;
