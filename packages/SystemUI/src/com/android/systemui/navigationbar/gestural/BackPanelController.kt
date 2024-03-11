@@ -500,10 +500,11 @@ internal constructor(
         mView.setDrawDoubleArrow(almostLongSwipe)
         if (wasAlmostLongSwipe != almostLongSwipe) {
             wasAlmostLongSwipe = almostLongSwipe
-            vibratorHelper.vibrate(
-                if (almostLongSwipe) VIBRATE_ACTIVATED_EFFECT
-                else VIBRATE_DEACTIVATED_EFFECT
-            )
+            if (almostLongSwipe) { 
+                performActivatedHapticFeedback()
+            } else { 
+                performDeactivatedHapticFeedback()
+            }
         }
     
         val gestureProgress =
