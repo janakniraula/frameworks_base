@@ -15,6 +15,8 @@
  */
 package com.android.systemui.statusbar;
 
+import static com.android.systemui.statusbar.StatusBarState.KEYGUARD;
+
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.Notification;
@@ -35,6 +37,7 @@ import com.android.systemui.dump.DumpManager;
 import com.android.systemui.media.controls.models.player.MediaData;
 import com.android.systemui.media.controls.models.recommendation.SmartspaceMediaData;
 import com.android.systemui.media.controls.pipeline.MediaDataManager;
+import com.android.systemui.plugins.statusbar.StatusBarStateController;
 import com.android.systemui.statusbar.dagger.CentralSurfacesModule;
 import com.android.systemui.statusbar.notification.collection.NotifCollection;
 import com.android.systemui.statusbar.notification.collection.NotifPipeline;
@@ -88,6 +91,8 @@ public class NotificationMediaManager implements Dumpable {
     private MediaController mMediaController;
     private String mMediaNotificationKey;
     private MediaMetadata mMediaMetadata;
+
+    private StatusBarStateController mStatusBarStateController;
 
     private boolean mIslandEnabled;
     private boolean mIslandNowPlayingEnabled;
@@ -156,6 +161,8 @@ public class NotificationMediaManager implements Dumpable {
         setupNotifPipeline();
 
         dumpManager.registerDumpable(this);
+
+        mStatusBarStateController = Dependency.get(StatusBarStateController.class);
 
         notifUtils = new NotificationUtils(mContext);
         TunerService tunerService = Dependency.get(TunerService.class);
