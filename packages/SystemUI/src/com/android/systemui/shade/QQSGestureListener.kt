@@ -52,7 +52,7 @@ class QQSGestureListener @Inject constructor(
         val tunable = Tunable { key: String?, value: String? ->
             when (key) {
                 DOUBLE_TAP_SLEEP_GESTURE ->
-                    doubleTapToSleepEnabled = TunerService.parseIntegerSwitch(value, true)
+                    doubleTapToSleepEnabled = TunerService.parseIntegerSwitch(value, false)
             }
         }
         tunerService.addTunable(tunable, DOUBLE_TAP_SLEEP_GESTURE)
