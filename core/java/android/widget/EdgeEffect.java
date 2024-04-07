@@ -249,7 +249,7 @@ public class EdgeEffect {
                     android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED;
 
         doVibrate = Settings.System.getInt(context.getContentResolver(),
-                Settings.System.SCROLL_FLING_HAPTIC_FEEDBACK, 1) != 0;
+                Settings.System.SCROLL_FLING_HAPTIC_FEEDBACK, 0) != 0;
     }
 
     /**
@@ -277,7 +277,7 @@ public class EdgeEffect {
                     android.Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED;
 
         doVibrate = Settings.System.getInt(context.getContentResolver(),
-                Settings.System.SCROLL_FLING_HAPTIC_FEEDBACK, 1) != 0;
+                Settings.System.SCROLL_FLING_HAPTIC_FEEDBACK, 0) != 0;
 
     }
 
