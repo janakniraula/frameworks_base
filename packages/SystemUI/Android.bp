@@ -215,7 +215,7 @@ android_library {
     additional_manifests: ["CustomManifest.xml"],
 
     javacflags: [
-        "-Adagger.fastInit=enabled",
+        // "-Adagger.fastInit=enabled",
         "-Aroom.schemaLocation=frameworks/base/packages/SystemUI/schemas",
     ],
     kotlincflags: ["-Xjvm-default=all"],
