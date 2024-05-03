@@ -724,7 +724,6 @@ public class FaceService extends SystemService {
                 }
                 providers.addAll(getHidlProviders(filteredInstances.first));
                 providers.addAll(getAidlProviders(filteredInstances.second));
-                providers.addAll(getSenseProviders());
                 return providers;
             });
         }
